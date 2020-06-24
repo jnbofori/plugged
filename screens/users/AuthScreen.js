@@ -87,7 +87,6 @@ export default class AuthScreen extends Component {
   
       if (result.type === 'success') {
         this.onSignIn(result);
-        console.log(result.user);
         return result.accessToken;
       } else {
         return { cancelled: true };

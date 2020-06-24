@@ -10,6 +10,8 @@ import AuthScreen from './screens/users/AuthScreen';
 import JobScreen from './screens/jobs/JobsScreen';
 import UsersJobsScreen from './screens/users/UsersJobsScreen';
 import TabBarIcon from './components/TabBarIcon';
+import LogoutIcon from './components/LogoutIcon';
+
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -78,7 +80,10 @@ export default function App() {
         <Stack.Screen 
             name="Home" 
             component={HomeTabs}
-            options={{ headerLeft: (props) => (<View></View>)}}></Stack.Screen>
+            options={{ 
+                headerLeft: (props) => (<View></View>),
+                headerRight: () => <LogoutIcon name="log-out" onPress={()=> firebase.auth().signOut()}/>
+                }}></Stack.Screen>
     </Stack.Navigator>
     </NavigationContainer>
   );

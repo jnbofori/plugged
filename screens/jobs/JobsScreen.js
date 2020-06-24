@@ -7,7 +7,6 @@ export default class JobScreen extends Component {
     return (
       <View style={styles.container}>
         <Text>Job Screen</Text>
-        <Button title="Sign Out" onPress={()=> firebase.auth().signOut()} />
       </View>
     );
   }
