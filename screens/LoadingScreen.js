@@ -1,29 +1,36 @@
 import React from 'react';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
-import firebase from 'firebase';
+import firebase, { auth } from 'firebase';
+import { useDispatch } from 'react-redux';
+import * as authAction from '../actions/AuthActions'
 
-export default class LoadingScreen extends React.Component {
-    componentDidMount() {
-        this.checkifLoggedIn();
-    }
 
-    checkifLoggedIn = () => {
+export default function LoadingScreen(props) {
+    const dispatch = useDispatch();
+
+    React.useEffect(() => {
+        checkifLoggedIn();
+    },[]);
+    
+
+    const checkifLoggedIn = () => {
         firebase.auth().onAuthStateChanged((user)=>{
             if(user){
-                this.props.navigation.navigate('Home');
+                console.log(user.getIdToken);
+            
+                dispatch(authAction.loggedIn(user.uid, user.getIdToken, user.displayName, user.email, user.photoURL))
+                props.navigation.navigate('Home');
             }else{
-                this.props.navigation.navigate('Login');
+                props.navigation.navigate('Login');
             }
         })
     }
 
-    render() {
-        return (
-            <View style={styles.container}>
-            <ActivityIndicator size='large'/>
-            </View>
-        );
-}
+    return (
+        <View style={styles.container}>
+        <ActivityIndicator size='large'/>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({

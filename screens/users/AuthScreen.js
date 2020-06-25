@@ -37,7 +37,7 @@ export default class AuthScreen extends Component {
         // Sign in with credential from the Google user.
         firebase.auth().signInWithCredential(credential)
         .then(function(result){
-          console.log('user signed in'+result.user.uid)
+          console.log('user signed in', result);
           if (result.additionalUserInfo.isNewUser) {
           firebase
             .database()
@@ -51,7 +51,7 @@ export default class AuthScreen extends Component {
             })
             .then(function(snapshot) {
               // console.log('Snapshot', snapshot);
-            });
+            });        
           }else {
                 firebase
                   .database()

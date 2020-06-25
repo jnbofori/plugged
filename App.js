@@ -11,7 +11,17 @@ import JobScreen from './screens/jobs/JobsScreen';
 import UsersJobsScreen from './screens/users/UsersJobsScreen';
 import TabBarIcon from './components/TabBarIcon';
 import LogoutIcon from './components/LogoutIcon';
+import { Provider } from 'react-redux';
+import { createStore, combineReducers } from 'redux';
 
+
+import AuthReducer from './reducers/authReducer';
+
+const rootReducer = combineReducers({AuthReducer})
+
+const store = createStore(rootReducer);
+
+store.subscribe(() => console.log(store.getState()));
 
 const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
@@ -67,6 +77,7 @@ const HomeTabs = ({navigation, route}) =>{
 
 export default function App() {
   return (
+    <Provider store={store}>
     <NavigationContainer>
     <Stack.Navigator>
         <Stack.Screen 
@@ -86,14 +97,8 @@ export default function App() {
                 }}></Stack.Screen>
     </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
