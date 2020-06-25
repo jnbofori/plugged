@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,9 +9,10 @@ import LoadingScreen from './screens/LoadingScreen';
 import AuthScreen from './screens/users/AuthScreen';
 import JobScreen from './screens/jobs/JobsScreen';
 import UsersJobsScreen from './screens/users/UsersJobsScreen';
+import PostJobScreen from './screens/jobs/PostJobScreen';
 import TabBarIcon from './components/TabBarIcon';
 import LogoutIcon from './components/LogoutIcon';
-import { Provider } from 'react-redux';
+import { Provider, useSelector, useStore } from 'react-redux';
 import { createStore, combineReducers } from 'redux';
 
 
@@ -74,6 +75,16 @@ const HomeTabs = ({navigation, route}) =>{
   );
 }
 
+function UserImage(props){
+  const profilePic = useSelector(state => state.AuthReducer.image);
+  return (
+    <Image 
+      source={{uri:profilePic}} 
+      style={{height:35, width:35, borderRadius: 17.5, marginLeft:20}} 
+      onPress={props.onPress} />
+  );
+}
+
 
 export default function App() {
   return (
@@ -92,9 +103,20 @@ export default function App() {
             name="Home" 
             component={HomeTabs}
             options={{ 
-                headerLeft: (props) => (<View></View>),
+                headerLeft: (props) => (
+                <View>
+                  <UserImage onPress={()=>{}}/>
+                </View>
+                  ),
                 headerRight: () => <LogoutIcon name="log-out" onPress={()=> firebase.auth().signOut()}/>
                 }}></Stack.Screen>
+          <Stack.Screen 
+            name="Post" 
+            component={PostJobScreen} 
+            options={{ 
+              title: 'Post Job',
+              headerBackTitle: 'Back'
+              }}></Stack.Screen>
     </Stack.Navigator>
     </NavigationContainer>
     </Provider>
