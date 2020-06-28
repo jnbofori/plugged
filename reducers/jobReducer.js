@@ -21,6 +21,14 @@ export default (state=initialState, action) => {
                 availableJobs: state.availableJobs.concat(newJob),
                 usersJobs: state.usersJobs.concat(newJob)
             }
+        case "CREATED_JOB_FAILED":
+            // console.log('creating jobs failed', action);
+            
+            return {
+                ...state,
+                descriptionErrorMessage: action.descriptionError,
+                phoneErrorMessage: action.phoneError
+            }
         default:
             return state
     }

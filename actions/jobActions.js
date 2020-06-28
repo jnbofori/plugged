@@ -10,3 +10,11 @@ export function postJob(data){
         }
     }
 } 
+
+export function failedJob(descriptionError, phoneError){
+    return {
+        type: "CREATED_JOB_FAILED",
+        descriptionError: descriptionError,
+        phoneError: phoneError
+    }
+} 

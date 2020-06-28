@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { StyleSheet, Text, View, ScrollView, TextInput, KeyboardAvoidingView, Button } from 'react-native';
 import * as firebase from 'firebase/app';
 import { useSelector, useDispatch } from 'react-redux';
-import { validate } from 'indicative/validator';
+import { validateAll } from 'indicative/validator';
 import * as jobActions from '../../actions/jobActions';
 
 
@@ -11,18 +11,21 @@ function PostJobScreen(props) {
   const [phone, setPhone] = useState('');
 
   const userId = useSelector(state => state.AuthReducer.userId);
+  const descriptionErrMsg = useSelector(state => state.JobReducer.descriptionErrorMessage)
+  const phoneErrMsg = useSelector(state => state.JobReducer.phoneErrorMessage)
   const dispatch = useDispatch();
 
-  // const data = useCallback(
-  //   () => {
-  //     const jobData = {
-  //       description: description,
-  //       phone: phone
-  //     }
-  //     dispatch(jobActions.postJob(jobData));
-  //   },
-  //   [description, phone],
-  // );
+  const rules = {
+    description: 'required|min:15',
+    phone: 'required|min:10',
+  }
+
+  const messages = {
+    required: (field) => `${field} is required`,
+    'description.min': 'Description is too short',
+    'phone.min': 'Phone Number is too short',
+  }
+
   function data(jobId){
     const jobData = {
       id: jobId,
@@ -35,16 +38,30 @@ function PostJobScreen(props) {
     dispatch(jobActions.postJob(jobData));
   }
 
-  const handleSubmit = () =>{
-    let jobs = firebase.database().ref('jobs');
-    let jobRef = jobs.push();
-    jobRef.set({
-      description: description,
-      phone: phone,
-      ownerId: userId
-    })
-      // console.log('Snapshot', jobRef.key); 
-    data(jobRef.key);
+  const handleSubmit = async () =>{
+    try{
+        const Data = {
+          description: description,
+          phone: phone,
+          }
+
+        await validateAll(Data, rules, messages)
+
+        let jobs = firebase.database().ref('jobs');
+        let jobRef = jobs.push();
+        jobRef.set({
+          description: description,
+          phone: phone,
+          ownerId: userId
+        })
+        // console.log('Snapshot', jobRef.key); 
+        data(jobRef.key);
+    }catch(errors){
+      console.log(errors);
+      const formattedErrors={};
+      errors.forEach(error => formattedErrors[error.field] = error.message)
+      dispatch(jobActions.failedJob(formattedErrors.description, formattedErrors.phone))
+    }
   }
 
   return (
@@ -53,6 +70,10 @@ function PostJobScreen(props) {
       <View style={styles.formContainer}>
         <Text style={styles.label}>Jobs Description</Text>
         <Text style={{fontSize:13}}>(also include salary, time and address)</Text>
+        {
+        descriptionErrMsg != undefined && 
+        (<View style={{paddingTop:4}}><Text style={{color:'red'}}>{descriptionErrMsg}</Text></View>)
+        }
         <TextInput 
           style={styles.input} 
           returnKeyType='next' 
@@ -62,6 +83,10 @@ function PostJobScreen(props) {
         </TextInput>
         <Text style={styles.label}>Phone</Text>
         <Text style={{fontSize:13}}>(Job seeker will call on this number )</Text>
+        {
+        phoneErrMsg != undefined && 
+        (<View style={{paddingTop:4}}><Text style={{color:'red'}}>{phoneErrMsg}</Text></View>)
+        }
         <TextInput 
           style={styles.phone} 
           returnKeyType='next' 
