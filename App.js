@@ -17,8 +17,9 @@ import { createStore, combineReducers } from 'redux';
 
 
 import AuthReducer from './reducers/authReducer';
+import JobReducer from './reducers/jobReducer';
 
-const rootReducer = combineReducers({AuthReducer})
+const rootReducer = combineReducers({AuthReducer, JobReducer})
 
 const store = createStore(rootReducer);
 
