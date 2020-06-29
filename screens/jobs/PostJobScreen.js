@@ -57,7 +57,7 @@ function PostJobScreen({ navigation }) {
         // console.log('Snapshot', jobRef.key); 
         data(jobRef.key);
         dispatch(jobActions.clearErrorMessage());
-        navigation.navigate('Home', { jobCreated: true });
+        navigation.navigate('AllJobs', { jobCreated: true });
     }catch(errors){
       // console.log(errors);
       const formattedErrors={};

@@ -6,6 +6,7 @@ import AddButton from '../../components/AddButton';
 import jobModel from '../../models/jobModel';
 import * as jobActions from '../../actions/jobActions';
 import JobItem from '../../components/JobItem';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function JobScreen({ route, navigation }){
   const [created, setCreated] = React.useState(false);
@@ -20,22 +21,26 @@ export default function JobScreen({ route, navigation }){
     allJobsRef.on('child_added', function(data){
       // console.log(data.key);
       loadedJobs.push(new jobModel(data.key, data.val().description, data.val().phone, data.val().ownerId));
-      
+      dispatch(jobActions.fetchAllJobs(userId, loadedJobs));
     })
-    console.log('loaded jobs array', loadedJobs);
-    dispatch(jobActions.fetchAllJobs(userId, loadedJobs));
+    // console.log('loaded jobs array', loadedJobs);  
   }
 
-  React.useEffect(()=>{
+  React.useEffect(()=> {
     if(route.params){
       setCreated(true)
       setTimeout(function(){ setCreated(false) }, 2000);
     }
-    fetchData();
-  },[dispatch, route.params])
+  },[route.params])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [dispatch])
+  );
 
     return (
-      <View>
+      <View style={styles.container} onPress={() => forceUpdate()}>
         <Modal
           animationType="slide"
           transparent={true}
@@ -56,12 +61,12 @@ export default function JobScreen({ route, navigation }){
 }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   flex: 1,
-  //   backgroundColor: '#fff',
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  // },
+  container: {
+    flex: 1,
+    // backgroundColor: '#fff',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+  },
   modalText: {
     justifyContent: "center",
     textAlign: "center",

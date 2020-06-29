@@ -53,13 +53,15 @@ const HomeTabs = ({navigation, route}) =>{
         return 'Recently Added';
       case 'UsersJobs':
         return 'My Jobs';
+      case 'AllJobs':
+        return 'Recently Added';
     }
   }
 
   return (
     <BottomTab.Navigator>
       <BottomTab.Screen 
-            name='Home' 
+            name='AllJobs' 
             component={JobScreen} 
             options={{
               title: 'Home',
