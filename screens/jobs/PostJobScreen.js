@@ -6,7 +6,7 @@ import { validateAll } from 'indicative/validator';
 import * as jobActions from '../../actions/jobActions';
 
 
-function PostJobScreen(props) {
+function PostJobScreen({ navigation }) {
   const [description, setDescription] = useState('');
   const [phone, setPhone] = useState('');
 
@@ -56,8 +56,10 @@ function PostJobScreen(props) {
         })
         // console.log('Snapshot', jobRef.key); 
         data(jobRef.key);
+        dispatch(jobActions.clearErrorMessage());
+        navigation.navigate('AllJobs', { jobCreated: true });
     }catch(errors){
-      console.log(errors);
+      // console.log(errors);
       const formattedErrors={};
       errors.forEach(error => formattedErrors[error.field] = error.message)
       dispatch(jobActions.failedJob(formattedErrors.description, formattedErrors.phone))

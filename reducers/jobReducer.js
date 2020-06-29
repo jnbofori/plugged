@@ -29,6 +29,20 @@ export default (state=initialState, action) => {
                 descriptionErrorMessage: action.descriptionError,
                 phoneErrorMessage: action.phoneError
             }
+        case "CLEAR_ERROR_MESSAGE":
+            return {
+                ...state,
+                descriptionErrorMessage: action.descriptionError,
+                phoneErrorMessage: action.phoneError
+            }
+        case "SET_JOBS":
+            console.log('fetching jobs action', action);
+            
+            return {
+                ...state,
+                availableJobs: action.allJobs,
+                usersJobs: action.usersOwnJobs
+            }
         default:
             return state
     }

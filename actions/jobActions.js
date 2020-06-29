@@ -18,3 +18,19 @@ export function failedJob(descriptionError, phoneError){
         phoneError: phoneError
     }
 } 
+
+export function clearErrorMessage(){
+    return {
+        type: "CLEAR_ERROR_MESSAGE",
+        descriptionError: undefined,
+        phoneError: undefined
+    }
+} 
+
+export function fetchAllJobs(userId, loadedJobs){
+    return {
+        type: "SET_JOBS",
+        allJobs: loadedJobs,
+        usersOwnJobs: loadedJobs.filter(job => job.ownerId == userId)
+    }
+}

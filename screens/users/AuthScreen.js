@@ -38,6 +38,12 @@ export default class AuthScreen extends Component {
         firebase.auth().signInWithCredential(credential)
         .then(function(result){
           console.log('user signed in', result);
+          dispatch(authAction.loggedIn(
+            result.user.uid, 
+            result.user.getIdToken, 
+            result.user.displayName, 
+            result.user.email, 
+            result.user.photoURL))
           if (result.additionalUserInfo.isNewUser) {
           firebase
             .database()
