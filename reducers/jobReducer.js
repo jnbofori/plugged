@@ -36,7 +36,7 @@ export default (state=initialState, action) => {
                 phoneErrorMessage: action.phoneError
             }
         case "SET_JOBS":
-            console.log('fetching jobs action', action);
+            // console.log('fetching jobs action', action);
             
             return {
                 ...state,

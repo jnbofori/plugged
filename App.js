@@ -59,7 +59,7 @@ const HomeTabs = ({navigation, route}) =>{
   return (
     <BottomTab.Navigator>
       <BottomTab.Screen 
-            name='AllJobs' 
+            name='Home' 
             component={JobScreen} 
             options={{
               title: 'Home',

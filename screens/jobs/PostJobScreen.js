@@ -35,7 +35,7 @@ function PostJobScreen({ navigation }) {
     }
 
     // console.log("Job Data", jobData);
-    dispatch(jobActions.postJob(jobData));
+    // dispatch(jobActions.postJob(jobData));
   }
 
   const handleSubmit = async () =>{
@@ -57,7 +57,7 @@ function PostJobScreen({ navigation }) {
         // console.log('Snapshot', jobRef.key); 
         data(jobRef.key);
         dispatch(jobActions.clearErrorMessage());
-        navigation.navigate('AllJobs', { jobCreated: true });
+        navigation.navigate('Home', { jobCreated: true });
     }catch(errors){
       // console.log(errors);
       const formattedErrors={};

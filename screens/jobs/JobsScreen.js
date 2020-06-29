@@ -1,24 +1,18 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Modal, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Modal, FlatList } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import AddButton from '../../components/AddButton';
 import jobModel from '../../models/jobModel';
 import * as jobActions from '../../actions/jobActions';
+import JobItem from '../../components/JobItem';
 
 export default function JobScreen({ route, navigation }){
   const [created, setCreated] = React.useState(false);
 
   const userId = useSelector(state => state.AuthReducer.userId);
+  const allJobs = useSelector(state => state.JobReducer.availableJobs);
   const dispatch = useDispatch();
-
-  React.useEffect(()=>{
-    fetchData();
-    if(route.params){
-      setCreated(true)
-      setTimeout(function(){ setCreated(false) }, 3000);
-    }
-  },[route.params])
 
   function fetchData(){
     let loadedJobs = [];
@@ -32,8 +26,16 @@ export default function JobScreen({ route, navigation }){
     dispatch(jobActions.fetchAllJobs(userId, loadedJobs));
   }
 
+  React.useEffect(()=>{
+    if(route.params){
+      setCreated(true)
+      setTimeout(function(){ setCreated(false) }, 2000);
+    }
+    fetchData();
+  },[dispatch, route.params])
+
     return (
-      <View style={styles.container}>
+      <View>
         <Modal
           animationType="slide"
           transparent={true}
@@ -44,19 +46,22 @@ export default function JobScreen({ route, navigation }){
           </View>
         </Modal>
 
-        <Text>Job Screen</Text>
+        <FlatList 
+          data={allJobs} 
+          keyExtractor={item => item.id}
+          renderItem={({item}) => <JobItem description={item.description} phone={item.phone.toString()}></JobItem>}/>
         <AddButton onPress={()=> navigation.navigate('Post')}/>
       </View>
     );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  // container: {
+  //   flex: 1,
+  //   backgroundColor: '#fff',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
   modalText: {
     justifyContent: "center",
     textAlign: "center",
