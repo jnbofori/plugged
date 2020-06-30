@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Modal, FlatList } from 'react-native';
+import {StyleSheet, Text, View, Modal, FlatList, ActivityIndicator, Image} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import firebase from 'firebase';
 import AddButton from '../../components/AddButton';
@@ -10,37 +10,53 @@ import { useFocusEffect } from '@react-navigation/native';
 
 export default function JobScreen({ route, navigation }){
   const [created, setCreated] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
 
   const userId = useSelector(state => state.AuthReducer.userId);
   const allJobs = useSelector(state => state.JobReducer.availableJobs);
   const dispatch = useDispatch();
 
   function fetchData(){
+    setIsRefreshing(true);
     let loadedJobs = [];
     let allJobsRef = firebase.database().ref("jobs");
     allJobsRef.on('child_added', function(data){
       // console.log(data.key);
       loadedJobs.push(new jobModel(data.key, data.val().description, data.val().phone, data.val().ownerId));
       dispatch(jobActions.fetchAllJobs(userId, loadedJobs));
-    })
-    // console.log('loaded jobs array', loadedJobs);  
+    });
+    // console.log('loaded jobs array', loadedJobs);
+    setIsRefreshing(false);
   }
 
   React.useEffect(()=> {
     if(route.params){
-      setCreated(true)
+      setCreated(true);
       setTimeout(function(){ setCreated(false) }, 2000);
     }
   },[route.params])
 
   useFocusEffect(
     React.useCallback(() => {
+      setIsLoading(true);
       fetchData();
+      setIsLoading(false);
     }, [dispatch])
   );
 
+
+  function LoadingImage(){
+    return (
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} >
+          <ActivityIndicator size='large' animating/>
+        </View>
+    );
+  }
+
     return (
       <View style={styles.container} onPress={() => forceUpdate()}>
+        { isLoading && <LoadingImage/> }
         <Modal
           animationType="slide"
           transparent={true}
@@ -51,9 +67,11 @@ export default function JobScreen({ route, navigation }){
           </View>
         </Modal>
 
-        <FlatList 
-          data={allJobs} 
+        <FlatList
+          data={allJobs}
           keyExtractor={item => item.id}
+          onRefresh={fetchData}
+          refreshing={isRefreshing}
           renderItem={({item}) => <JobItem description={item.description} phone={item.phone.toString()}></JobItem>}/>
         <AddButton onPress={()=> navigation.navigate('Post')}/>
       </View>
@@ -63,9 +81,6 @@ export default function JobScreen({ route, navigation }){
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: '#fff',
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
   modalText: {
     justifyContent: "center",
