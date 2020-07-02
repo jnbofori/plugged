@@ -10,6 +10,7 @@ import AuthScreen from './screens/users/AuthScreen';
 import JobScreen from './screens/jobs/JobsScreen';
 import UsersJobsScreen from './screens/users/UsersJobsScreen';
 import PostJobScreen from './screens/jobs/PostJobScreen';
+import EditJobScreen from "./screens/jobs/EditJobScreen";
 import TabBarIcon from './components/TabBarIcon';
 import LogoutIcon from './components/LogoutIcon';
 import { Provider, useSelector, useStore } from 'react-redux';
@@ -113,13 +114,19 @@ export default function App() {
                   ),
                 headerRight: () => <LogoutIcon name="log-out" onPress={()=> firebase.auth().signOut()}/>
                 }}></Stack.Screen>
-          <Stack.Screen 
-            name="Post" 
+        <Stack.Screen
+            name="Post"
             component={PostJobScreen} 
             options={{ 
               title: 'Post Job',
               headerBackTitle: 'Back'
               }}></Stack.Screen>
+        <Stack.Screen
+            name="Edit"
+            component={EditJobScreen}
+            options={{
+                title: 'Edit Job'
+            }}></Stack.Screen>
     </Stack.Navigator>
     </NavigationContainer>
     </Provider>

@@ -22,8 +22,7 @@ export default (state=initialState, action) => {
                 usersJobs: state.usersJobs.concat(newJob)
             }
         case "CREATED_JOB_FAILED":
-            // console.log('creating jobs failed', action);
-            
+            // console.log('creating jobs failed', action)
             return {
                 ...state,
                 descriptionErrorMessage: action.descriptionError,
@@ -37,11 +36,21 @@ export default (state=initialState, action) => {
             }
         case "SET_JOBS":
             // console.log('fetching jobs action', action);
-            
             return {
                 ...state,
                 availableJobs: action.allJobs,
                 usersJobs: action.usersOwnJobs
+            }
+        case "SET_USER_JOBS":
+            // console.log('fetching jobs action', action);
+            return {
+                ...state,
+                usersJobs: action.usersOwnJobs
+            }
+        case "DELETE_JOB":
+            // console.log('fetching jobs action', action);
+            return {
+                usersJobs: state.usersJobs.filter(job => job.id !== action.jobId)
             }
         default:
             return state

@@ -34,3 +34,17 @@ export function fetchAllJobs(userId, loadedJobs){
         usersOwnJobs: loadedJobs.filter(job => job.ownerId == userId)
     }
 }
+
+export function fetchUserJobs(userId, loadedJobs){
+    return {
+        type: "SET_USER_JOBS",
+        usersOwnJobs: loadedJobs.filter(job => job.ownerId == userId)
+    }
+}
+
+export function deleteJob(jobId) {
+    return {
+        type: "DELETE_JOB",
+        jobId: jobId
+    }
+}
