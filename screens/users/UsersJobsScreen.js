@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, FlatList, Alert } from 'react-native';
+import {StyleSheet, Text, View, FlatList, Alert, Modal} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import AddButton from '../../components/AddButton';
 import OwnJobItem from "../../components/OwnJobItem";
@@ -8,7 +8,8 @@ import jobModel from "../../models/jobModel";
 import * as jobActions from "../../actions/jobActions";
 import {deleteJob} from "../../actions/jobActions";
 
-export default function UsersJobsScreen({ navigation}) {
+export default function UsersJobsScreen({ navigation, route }) {
+    const [created, setCreated] = React.useState(false);
     const [isRefreshing, setIsRefreshing] = React.useState(false);
 
     const dispatch = useDispatch();
@@ -53,11 +54,25 @@ export default function UsersJobsScreen({ navigation}) {
     };
 
     React.useEffect(()=> {
+        if(route.params){
+            setCreated(true);
+            setTimeout(function(){ setCreated(false) }, 2000);
+        }
         fetchJobs();
-    },[dispatch]);
+    },[dispatch, route.params]);
 
     return (
       <View style={styles.container}>
+          <Modal
+              animationType="slide"
+              transparent={true}
+              visible={created}
+              onRequestClose={() => {}}>
+              <View style={styles.modalView}>
+                  <Text style={styles.modalText}>Edited Successfully!</Text>
+              </View>
+          </Modal>
+
         <FlatList
             data={usersJobs}
             keyExtractor={item => item.id}
@@ -73,8 +88,29 @@ export default function UsersJobsScreen({ navigation}) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+    container: {
+        flex: 1,
+    },
+    modalText: {
+        justifyContent: "center",
+        textAlign: "center",
+        color: "white"
+    },
+    modalView: {
+        margin: 20,
+        marginTop: 75,
+        backgroundColor: "#2f95dc",
+        borderRadius: 20,
+        padding: 25,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5
+    }
 });
 

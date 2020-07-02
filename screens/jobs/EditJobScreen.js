@@ -1,21 +1,130 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, ScrollView, TextInput, KeyboardAvoidingView, Button } from 'react-native';
+import * as firebase from 'firebase/app';
+import { useSelector, useDispatch } from 'react-redux';
+import { validateAll } from 'indicative/validator';
+import * as jobActions from '../../actions/jobActions';
 
-function EditJobScreen() {
+function EditJobScreen({ navigation, route }) {
+  const [description, setDescription] = useState('');
+  const [phone, setPhone] = useState('');
+
+  const usersJobs = useSelector(state => state.JobReducer.usersJobs);
+  const descriptionErrMsg = useSelector(state => state.JobReducer.descriptionErrorMessage)
+  const phoneErrMsg = useSelector(state => state.JobReducer.phoneErrorMessage)
+  const dispatch = useDispatch();
+  const { jobId } = route.params;
+
+  const jobToUpdate = usersJobs ? usersJobs.find(job => job.id === jobId) : [];
+  console.log('users job to update------------------', jobToUpdate);
+
+  useEffect(() => {
+    setDescription(jobToUpdate.description);
+    setPhone(jobToUpdate.phone);
+  },[]);
+
+  const rules = {
+    description: 'required|min:15',
+    phone: 'required|min:10',
+  };
+
+  const messages = {
+    required: (field) => `${field} is required`,
+    'description.min': 'Description is too short',
+    'phone.min': 'Phone Number is too short',
+  };
+
+  const handleSubmit = async () =>{
+    try{
+      const Data = {
+        description: description,
+        phone: phone,
+      };
+
+      await validateAll(Data, rules, messages);
+
+      let job = firebase.database().ref('jobs/'+jobId);
+      job.update({
+        description: description,
+        phone: phone
+      }).then(()=>{
+        dispatch(jobActions.clearErrorMessage());
+        navigation.navigate('UsersJobs', { jobEdited: true });
+      })
+      // console.log('Snapshot', jobRef.key);
+      // data(jobRef.key);
+    }catch(errors){
+      // console.log(errors);
+      const formattedErrors={};
+      errors.forEach(error => formattedErrors[error.field] = error.message)
+      dispatch(jobActions.failedJob(formattedErrors.description, formattedErrors.phone))
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Edit Screen</Text>
-    </View>
+      <KeyboardAvoidingView style={{flex:1, paddingHorizontal:6}} enabledKeyboardOffset={350}>
+        <ScrollView contentContainerStyle={{alignItems: "center"}}>
+          <View style={styles.formContainer}>
+            <Text style={styles.label}>Jobs Description</Text>
+            <Text style={{fontSize:13}}>(also include salary, time and address)</Text>
+            {
+              descriptionErrMsg != undefined &&
+              (<View style={{paddingTop:4}}><Text style={{color:'red'}}>{descriptionErrMsg}</Text></View>)
+            }
+            <TextInput
+                style={styles.input}
+                returnKeyType='next'
+                multiline numberOfLines={20}
+                value={description}
+                onChangeText={(desc)=>setDescription(desc)}>
+            </TextInput>
+            <Text style={styles.label}>Phone</Text>
+            <Text style={{fontSize:13}}>(Job seeker will call on this number )</Text>
+            {
+              phoneErrMsg != undefined &&
+              (<View style={{paddingTop:4}}><Text style={{color:'red'}}>{phoneErrMsg}</Text></View>)
+            }
+            <TextInput
+                style={styles.phone}
+                returnKeyType='next'
+                keyboardType = 'phone-pad'
+                value={phone}
+                onChangeText={(phone)=>setPhone(phone)}>
+            </TextInput>
+            <Button title="Submit Job" onPress={handleSubmit}/>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  formContainer: {
+    width: '100%',
+    marginTop: 15
   },
+  label: {
+    fontSize: 20
+  },
+  input: {
+    paddingHorizontal: 2,
+    paddingVertical: 5,
+    backgroundColor: '#f9f7f6',
+    height: 150,
+    fontSize: 15,
+    borderColor: '#ccc',
+    borderWidth: 2,
+    marginVertical: 5,
+  },
+  phone: {
+    paddingHorizontal: 2,
+    paddingVertical: 5,
+    backgroundColor: '#f9f7f6',
+    fontSize: 15,
+    borderColor: '#ccc',
+    borderWidth: 2,
+    marginVertical: 5,
+  }
 });
 
 
