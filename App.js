@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image } from 'react-native';
+import { View, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, HeaderBackButton } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -77,7 +77,7 @@ const HomeTabs = ({navigation, route}) =>{
             }}/>
     </BottomTab.Navigator>
   );
-}
+};
 
 function UserImage(props){
   const profilePic = useSelector(state => state.AuthReducer.image);
@@ -112,7 +112,7 @@ export default function App() {
                   <UserImage onPress={()=>{}}/>
                 </View>
                   ),
-                headerRight: () => <LogoutIcon name="log-out" onPress={()=> firebase.auth().signOut()}/>
+                headerRight: () => <LogoutIcon name="log-out"/>
                 }}></Stack.Screen>
         <Stack.Screen
             name="Post"

@@ -11,19 +11,25 @@ export function postJob(data){
     }
 } 
 
-export function failedJob(descriptionError, phoneError){
+export function failedJob(titleError, descriptionError, locationError, phoneError, deadlineError){
     return {
         type: "CREATED_JOB_FAILED",
+        titleError: titleError,
         descriptionError: descriptionError,
-        phoneError: phoneError
+        locationError: locationError,
+        phoneError: phoneError,
+        deadlineError: deadlineError
     }
 } 
 
 export function clearErrorMessage(){
     return {
         type: "CLEAR_ERROR_MESSAGE",
+        titleError: undefined,
         descriptionError: undefined,
-        phoneError: undefined
+        locationError: undefined,
+        phoneError: undefined,
+        deadlineError: undefined
     }
 } 
 

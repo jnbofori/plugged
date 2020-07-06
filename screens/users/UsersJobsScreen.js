@@ -7,6 +7,7 @@ import firebase from "firebase";
 import jobModel from "../../models/jobModel";
 import * as jobActions from "../../actions/jobActions";
 import {deleteJob} from "../../actions/jobActions";
+import JobItem from "../../components/JobItem";
 
 export default function UsersJobsScreen({ navigation, route }) {
     const [created, setCreated] = React.useState(false);
@@ -23,8 +24,20 @@ export default function UsersJobsScreen({ navigation, route }) {
         allJobsRef.on('child_added', function(data){
             // console.log(data.key);
             if(userId == data.val().ownerId) {
-                loadedUserJobs.push(new jobModel(data.key, data.val().description, data.val().phone, data.val().ownerId));
-                dispatch(jobActions.fetchUserJobs(userId, loadedUserJobs));
+                firebase.database().ref('users/'+data.val().ownerId).once('value', function (dataSnapshot) {
+                    loadedUserJobs.push(new jobModel(
+                        data.key,
+                        data.val().title,
+                        data.val().description,
+                        data.val().location,
+                        data.val().phone,
+                        data.val().deadline,
+                        data.val().ownerId,
+                        dataSnapshot.val().first_name,
+                        dataSnapshot.val().last_name,
+                        dataSnapshot.val().profile_picture));
+                    dispatch(jobActions.fetchUserJobs(userId, loadedUserJobs.reverse()));
+                });
             }
         });
         // console.log('loaded jobs array', loadedJobs);
@@ -79,7 +92,11 @@ export default function UsersJobsScreen({ navigation, route }) {
             onRefresh={fetchJobs}
             refreshing={isRefreshing}
             renderItem={({item}) => <OwnJobItem
+                                        title={item.title}
                                         description={item.description}
+                                        location={item.location}
+                                        deadline={item.deadline}
+                                        profilePic={item.profilePic}
                                         deleteJob={()=>deleteJobs(item.id)}
                                         editJob={()=>editJob(item.id)}></OwnJobItem>}/>
         <AddButton onPress={()=> navigation.navigate('Post')} />

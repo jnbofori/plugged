@@ -25,14 +25,20 @@ export default (state=initialState, action) => {
             // console.log('creating jobs failed', action)
             return {
                 ...state,
+                titleErrorMessage: action.titleError,
                 descriptionErrorMessage: action.descriptionError,
-                phoneErrorMessage: action.phoneError
+                locationErrorMessage: action.locationError,
+                phoneErrorMessage: action.phoneError,
+                deadlineErrorMessage: action.deadlineError
             }
         case "CLEAR_ERROR_MESSAGE":
             return {
                 ...state,
+                titleErrorMessage: action.titleError,
                 descriptionErrorMessage: action.descriptionError,
-                phoneErrorMessage: action.phoneError
+                locationErrorMessage: action.locationError,
+                phoneErrorMessage: action.phoneError,
+                deadlineErrorMessage: action.deadlineError
             }
         case "SET_JOBS":
             // console.log('fetching jobs action', action);

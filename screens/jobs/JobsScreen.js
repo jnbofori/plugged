@@ -23,8 +23,21 @@ export default function JobScreen({ route, navigation }){
     let allJobsRef = firebase.database().ref("jobs");
     allJobsRef.on('child_added', function(data){
       // console.log(data.key);
-      loadedJobs.push(new jobModel(data.key, data.val().description, data.val().phone, data.val().ownerId));
-      dispatch(jobActions.fetchAllJobs(userId, loadedJobs));
+      firebase.database().ref('users/'+data.val().ownerId).once('value', function (dataSnapshot) {
+          loadedJobs.push(new jobModel(
+              data.key,
+              data.val().title,
+              data.val().description,
+              data.val().location,
+              data.val().phone,
+              data.val().deadline,
+              data.val().ownerId,
+              dataSnapshot.val().first_name,
+              dataSnapshot.val().last_name,
+              dataSnapshot.val().profile_picture));
+          dispatch(jobActions.fetchAllJobs(userId, loadedJobs.reverse()));
+      })
+
     });
     // console.log('loaded jobs array', loadedJobs);
     setIsRefreshing(false);
@@ -72,7 +85,15 @@ export default function JobScreen({ route, navigation }){
           keyExtractor={item => item.id}
           onRefresh={fetchData}
           refreshing={isRefreshing}
-          renderItem={({item}) => <JobItem description={item.description} phone={item.phone.toString()}></JobItem>}/>
+          renderItem={({item}) => <JobItem
+                                    title={item.title}
+                                    description={item.description}
+                                    location={item.location}
+                                    phone={item.phone.toString()}
+                                    deadline={item.deadline}
+                                    firstName={item.firstName}
+                                    lastName={item.lastName}
+                                    profilePic={item.profilePic}></JobItem>}/>
         <AddButton onPress={()=> navigation.navigate('Post')}/>
       </View>
     );
