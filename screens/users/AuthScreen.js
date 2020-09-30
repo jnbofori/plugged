@@ -86,8 +86,8 @@ export default class AuthScreen extends Component {
   signInWithGoogleAsync = async () => {
     try {
       const result = await Google.logInAsync({
-        androidClientId: '65313385227-fmbn0nf5j2q5ana90rj5073ttbe3k102.apps.googleusercontent.com',
-        iosClientId: '65313385227-tfs26iqt11nsko0s06ekpjfgbdnnkrir.apps.googleusercontent.com',
+        androidClientId: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        iosClientId: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
         scopes: ['profile', 'email'],
       });
   
