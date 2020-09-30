@@ -30,13 +30,13 @@ const Stack = createStackNavigator();
 const BottomTab = createBottomTabNavigator();
 
 var firebaseConfig = {
-  apiKey: "AIzaSyAdTPlKV_segOogfit90M4V4Zi74mSCleM",
-  authDomain: "plugged-6cec5.firebaseapp.com",
-  databaseURL: "https://plugged-6cec5.firebaseio.com",
+  apiKey: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  authDomain: "xxxxxx",
+  databaseURL: "https://xxxxxx",
   projectId: "plugged-6cec5",
-  storageBucket: "plugged-6cec5.appspot.com",
-  messagingSenderId: "65313385227",
-  appId: "1:65313385227:web:4048248873ba66aba9100e",
+  storageBucket: "xxxxxxxxxxxxxxxxxxxxxxx",
+  messagingSenderId: "xxxxxxxxxxxx",
+  appId: "xxxxxxxxxxxxxxxxxxxx",
   measurementId: "G-1ZXT4G2DHS"
 };
 // Initialize Firebase
